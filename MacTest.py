@@ -42,7 +42,7 @@ print "Creating predictive filter object..."
 pf = pypfilt.PyPredictiveFilter()
 
 
-x=np.linspace(0,6*np.pi,250)
+x=np.linspace(0,6*np.pi,300)
 dataset=15*np.sin(x)+np.random.ranf(len(x))*3
 time = np.array(np.arange(len(x)), dtype='uint64')
 
@@ -55,7 +55,7 @@ print "returned: ",ret
 # Configurable filter values:
 polyorder = 2
 cutoffFreq = 20.0 # Hz
-overridePointsToFit=20
+overridePointsToFit=25
 
 cdresiduals = np.zeros(len(dataset))
 predictedPoints = np.zeros(len(dataset))

@@ -4,15 +4,17 @@ from Cython.Distutils import build_ext
 import numpy as np
 import os
 
+currdir = os.path.abspath(".")
 os.environ["CC"] = "g++" 
 os.environ["CXX"] = "g++"
 
 ext_modules=[
     Extension(name = "PyPredictiveFilter",
               sources=["PyPredictiveFilter.pyx"],
-              include_dirs = ["."]+ [np.get_include()],
+              include_dirs = [currdir] + [np.get_include()],
               libraries=["predictivefilter"],
-	          library_dirs =["."],
+	          library_dirs =[".",currdir],
+              extra_link_args=["-L."],
 	          language="c++") # Unix-like specific
 ]
 

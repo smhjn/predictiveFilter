@@ -5,10 +5,11 @@ LIBFLAGS = -O3 -mtune=corei7-avx -march=corei7-avx -m64 -pipe -c -Wall -Wextra -
 LDFLAGS = -mtune=corei7-avx -march=corei7-avx -m64 -pipe -Wall -Wextra -lpthread -pthread 
 
 OBJS=PolyFit.o LowPassFilter.o PredictiveFilter.o
-LIBS=libpolyfit.so liblowpassfilter.so libpredictivefilter.so PyPredictiveFilter.so
+LIBS=libpolyfit.so liblowpassfilter.so libpredictivefilter.so 
 TEST=PolyFitTest.bin LowPassFilterTest.bin #PredictiveFilterTest.bin
+PYTHON=PyPredictiveFilter.so
 
-all: dep $(LIBS) $(TEST) 
+all: dep $(LIBS) $(TEST) $(PYTHON)
 
 dep:
 	# make -C ./cdhlib
@@ -38,13 +39,14 @@ LowPassFilterTest.bin: LowPassFilterTest.cpp LowPassFilter.cpp
 	$(CPP) -Wall -Wextra LowPassFilterTest.cpp LowPassFilter.cpp -o LowPassFilterTest.bin -lm -lfftw3
 
 PyPredictiveFilter.so: libpredictivefilter.so
-	CXX=$(CPP) LDFLAGS="-L. $(LDFLAGS)" python setup.py build_ext --inplace
+	python setup.py build_ext --inplace
 
 install:
 	cp $(LIBS) ../$(INSLIB)
 	chmod a+x ../$(INSLIB)/$(LIBS)
 	
 clean:
-	-rm -f $(OBJS) $(LIBS) $(TEST) $(TMP) 
+	-rm -f $(OBJS) $(LIBS) $(TEST) $(TMP) PyPredictiveFilter.cpp PyPredictiveFilter.c PyPredictiveFilter.so
+	rm -rf build/*
 	make -C ./cdhlib clean
 
