@@ -1,0 +1,3 @@
+[submodule "PyDyGraphs"]
+	path = PyDyGraphs
+	url = git@github.com:DayStarEngineering/PyDyGraphs.git
