@@ -9,7 +9,7 @@ import sys
 
 DEBUG = False
 
-RUNTEST1 = False
+RUNTEST1 = True
 
 def runTest(timestamps, data):
 
@@ -39,7 +39,7 @@ def runTest(timestamps, data):
         print "*** configure() failed! returned", ret
 
     # Configurable filter values:
-    order = 2
+    order = 3
     cutoffFrequency = 20.0 # Hz
 
     #######################################################
@@ -162,7 +162,7 @@ def runTest(timestamps, data):
 
     # Make filter plot:
     plt.figure()
-    plt.plot(time, rawData, 'k', label="input data")
+    plt.plot(time, rawData, 'k.', label="input data")
     plt.plot(time, filteredData, 'b', label="filtered data")
     plt.plot(fitTimeToPlot, fitData, 'gs', label='fit data')
     plt.plot(fitTimeToPlot, np.polyval(coeffs, fitTime), 'r', label='polynomial')
@@ -317,9 +317,9 @@ def AzElPredictionResiduals(time,Az,El,AzFilter=None,ElFilter=None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='This test script opens and parses a control law csv file, loads it into the predictive filter, and plots results.')
-    parser.add_argument('fname', metavar='controllawfile', type=str, help='a controllaw file to ingest')
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='This test script opens and parses a control law csv file, loads it into the predictive filter, and plots results.')
+    # parser.add_argument('fname', metavar='controllawfile', type=str, help='a controllaw file to ingest')
+    # args = parser.parse_args()
 
     # Extract data from file:
     # Do this eventually...
@@ -331,10 +331,10 @@ if __name__ == "__main__":
     # func = lambda x: x/1e9a
     # data['time'] = data['loopIter'].apply(func) - data['loopIter'].apply(func).iloc[0]  # playing with lambdas and apply
     # data.dt = map(lambda x,y:x-y,data.time.iloc[1:].tolist(),data.time.iloc[:-1].tolist())
-    print "Loading file: ", args.fname
-    data = zip(*np.genfromtxt(args.fname, dtype=None, delimiter=','))
-    time = np.array(data[1], dtype='uint64')
-    azimuth = np.array(data[8], dtype='double')
+    # print "Loading file: ", args.fname
+    # data = zip(*np.genfromtxt(args.fname, dtype=None, delimiter=','))
+    time = np.arange(0,400,dtype='uint64')
+    azimuth = np.array(np.sin(2*np.pi*time/400.0), dtype='double') + (np.random.rand(len(time))-0.5)*0.5
 
     runTest(time,azimuth)
     #print "Processing azimuth data, generating residuals and predictions for whole dataset"
