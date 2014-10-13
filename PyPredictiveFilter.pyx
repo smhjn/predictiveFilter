@@ -6,21 +6,21 @@ cdef extern from "PredictiveFilter.h":
         PredictiveFilter() except +
         void reset()
         int configure(unsigned int numPointsToFilter,unsigned flags)
-        int addData(unsigned long* timestamps, double* datapoints, unsigned int length)
+        int addData(double* timestamps, double* datapoints, unsigned int length)
         int filter(double cutoffFrequency, int order, unsigned int numPointsToFit)
-        double getPrediction(unsigned long timestamp)
+        double getPrediction(double timestamp)
 
         # Get state functions:
         double* getData()
         double* getFilteredData()
         double* getDataToFit()
         double* getTimeToFit()
-        unsigned long* getTime()
+        double* getTime()
         long double* getCoeffs()
         unsigned int getNumDataPoints()
         unsigned int getNumDataPointsToFit()
         unsigned int getNumDataPointsToFilter()
-        unsigned long getStartTime()
+        double getStartTime()
 
 
 # Import C level numpy:
@@ -55,7 +55,7 @@ cdef class PyPredictiveFilter:
         fftwPlan = {"FFTW_ESTIMATE":64, "FFTW_MEASURE":0, "FFTW_PATIENT": 32, "FFTW_EXHAUSTIVE": 8, "FFTW_WISDOM_ONLY": 2097152}
         return self.thisptr.configure(numPointsToFilter, fftwPlan[flags])
 
-    def addData(self, np.ndarray[unsigned long, ndim=1] timestamps, np.ndarray[double, ndim=1] datapoints):
+    def addData(self, np.ndarray[double, ndim=1] timestamps, np.ndarray[double, ndim=1] datapoints):
         return self.thisptr.addData(&timestamps[0], &datapoints[0], len(timestamps))
 
     def filter(self, cutoffFrequency, order, numPointsToFit=0):
@@ -118,7 +118,7 @@ cdef class PyPredictiveFilter:
 
     def getTime(self):
         # Call the C function:
-        cdef unsigned long* data_ptr
+        cdef double* data_ptr
         data_ptr = self.thisptr.getTime()
 
         # Configure array size:
@@ -127,7 +127,7 @@ cdef class PyPredictiveFilter:
         shape[0] = <np.npy_intp> size
 
         # Cast C array as a numpy array:
-        return  np.PyArray_SimpleNewFromData(1, shape, np.NPY_ULONG, data_ptr)
+        return  np.PyArray_SimpleNewFromData(1, shape, np.NPY_DOUBLE, data_ptr)
 
     def getCoeffs(self):
         # Call the C function:

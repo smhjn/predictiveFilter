@@ -18,21 +18,21 @@ class PredictiveFilter
 	~PredictiveFilter();
 	void reset();
 	int configure(unsigned int numPointsToFilter=MAXNUMDATAPOINTS, unsigned flags=FFTW_EXHAUSTIVE);
-	int addData(unsigned long* timestamps, double* datapoints, unsigned int length=1);
+	int addData(double* timestamps, double* datapoints, unsigned int length=1);
 	int filter(double cutoffFrequency, int order, unsigned int numPointsToFit=0);
-	double getPrediction(unsigned long timestamp=0);
+	double getPrediction(double timestamp=0);
 
 	// Get state functions:
 	double* getData(){ return &data[numDataPointsToFilter-numDataPoints]; }
 	double* getFilteredData(){ return filteredData; }
 	double* getDataToFit(){ return dataToFit; }
 	double* getTimeToFit(){ return timeToFit; }
-	unsigned long* getTime(){ return &time[numDataPointsToFilter-numDataPoints]; }
+	double* getTime(){ return &time[numDataPointsToFilter-numDataPoints]; }
 	long double* getCoeffs(){ return Coeffs; }
 	unsigned int getNumDataPoints(){ return numDataPoints; }
 	unsigned int getNumDataPointsToFit(){ return numDataPointsToFit; }
 	unsigned int getNumDataPointsToFilter(){ return numDataPointsToFilter; }
-	unsigned long getStartTime(){ return startTime; }
+	double getStartTime(){ return startTime; }
 
 	private:
 	int calculateNumberOfPolyPoints(int polyOrder, double SIratio);
@@ -46,7 +46,7 @@ class PredictiveFilter
 	double data[MAXNUMDATAPOINTS];
 	double filteredData[MAXNUMDATAPOINTS];
 	double dataToFit[MAXNUMDATAPOINTS];
-	unsigned long time[MAXNUMDATAPOINTS];
+	double time[MAXNUMDATAPOINTS];
 	double timeToFit[MAXNUMDATAPOINTS];
 
 	// Low pass filter class:
@@ -54,7 +54,7 @@ class PredictiveFilter
 
 	// Protected State:
 	// pthread_mutex_t lock;
-    unsigned long startTime;
+    double startTime;
     long double Coeffs[MAXORDER+1];
     int Order;
 

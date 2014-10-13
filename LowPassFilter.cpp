@@ -97,7 +97,7 @@ int LowPassFilter::configure(unsigned int numPointsToUse, unsigned flags)
 	return 0;
 }
 
-double LowPassFilter::filter(double cutoffFrequency, unsigned long* timeStamps, double* inputSignal, double* outputSignal)
+double LowPassFilter::filter(double cutoffFrequency, double* timeStamps, double* inputSignal, double* outputSignal)
 {
 	unsigned int k;
 	int ind;
@@ -214,7 +214,7 @@ double LowPassFilter::filter(double cutoffFrequency, unsigned long* timeStamps, 
 	#endif
 
 	// Calculate sample frequency:
-	double avedt = (timeStamps[numRealPoints-1] - timeStamps[0]) / 1000.0 / 1000.0 / 1000.0 / numRealPoints;
+	double avedt = (timeStamps[numRealPoints-1] - timeStamps[0]) / numRealPoints;
 	sampleFrequency = 1.0/avedt;
 
 	// Create the hann filter:

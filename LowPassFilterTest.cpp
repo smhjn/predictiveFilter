@@ -24,7 +24,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 #define DT 0.0025
-void genSignal(unsigned long* timeStamp, double* signal, int numPoints) {
+void genSignal(double* timeStamp, double* signal, int numPoints) {
     /* Generate two sine waves of different frequencies and
      * amplitudes.
      */  
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 {
 	unsigned int numPoints = 128;
 	double cutoffFrequency = 10.0;
-	unsigned long timeStamp[MAX_NUM_REAL_POINTS];
+	double timeStamp[MAX_NUM_REAL_POINTS];
 	double inputSignal[MAX_NUM_REAL_POINTS];
 	double outputSignal[MAX_NUM_REAL_POINTS];
 
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 		    //cout << "line: " << line << endl;
 		    // Parse input file:
 		    parsedLine = split(line, ',');
-		    timeStamp[cnt] = atol(parsedLine[1].c_str());
+		    timeStamp[cnt] = atof(parsedLine[1].c_str());
 		    inputSignal[cnt] = atof(parsedLine[8 + atoi(argv[3])].c_str());
 		    #if DEBUG_LPF
 		    printf("initial: %f\n", inputSignal[cnt]);

@@ -28,7 +28,7 @@ class LowPassFilter
 	~LowPassFilter();
 	void destroy();
 	int configure(unsigned int numPointsToUse, unsigned flags=FFTW_EXHAUSTIVE);
-	double filter(double cutoffFreq, unsigned long* timeStamps, double* inputSignal, double* outputSignal); // returns S/I ratio
+	double filter(double cutoffFreq, double* timeStamps, double* inputSignal, double* outputSignal); // returns S/I ratio
 	void printResults();
 
 	private:
@@ -49,7 +49,7 @@ class LowPassFilter
 	double input_fft_signal[MAX_NUM_REAL_POINTS_PADDED];
 	double output_fft_signal[MAX_NUM_REAL_POINTS_PADDED];
 	double filter_array[MAX_NUM_FFT_POINTS_PADDED];
-	unsigned long timestamps[MAX_NUM_REAL_POINTS_PADDED];
+	double timestamps[MAX_NUM_REAL_POINTS_PADDED];
 	fftw_complex power[MAX_NUM_FFT_POINTS_PADDED];
 	fftw_complex filtered_power_copy[MAX_NUM_FFT_POINTS_PADDED];
 	fftw_complex filtered_power[MAX_NUM_FFT_POINTS_PADDED];

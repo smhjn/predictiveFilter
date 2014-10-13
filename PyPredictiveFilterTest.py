@@ -39,8 +39,8 @@ def runTest(timestamps, data):
         print "*** configure() failed! returned", ret
 
     # Configurable filter values:
-    order = 3
-    cutoffFrequency = 20.0 # Hz
+    order = 2
+    cutoffFrequency = 1.0 # Hz
 
     #######################################################
     ##################### TEST 1 ##########################
@@ -63,7 +63,7 @@ def runTest(timestamps, data):
         print
 
         print "Running filter with cutoffFrequency=" + str(cutoffFrequency) + "Hz and order=" + str(order) + "..."
-        ret = pf.filter(cutoffFrequency, order)
+        ret = pf.filter(cutoffFrequency, order, numPointsToFit=30)
         if not ret:
             print "filter() ran successfully returning", ret
             pass
@@ -86,50 +86,50 @@ def runTest(timestamps, data):
     #######################################################
     ##################### TEST 2 ##########################
     #######################################################
-    else:
+    # else:
         # Add data to filter sequentially:
-        dataPointsToGoThrough = 20
-        for i in xrange(dataPointsToGoThrough):
-            ret = pf.addData(timestamps[i:i+1], data[i:i+1])
-            if not ret:
-                #print "addData() ran successfully returning", ret
-                pass
-            else:
-                print "*** addData() failed! returned", ret
+        # dataPointsToGoThrough = 20
+        # for i in xrange(dataPointsToGoThrough):
+        #     ret = pf.addData(timestamps[i:i+1], data[i:i+1])
+        #     if not ret:
+        #         #print "addData() ran successfully returning", ret
+        #         pass
+        #     else:
+        #         print "*** addData() failed! returned", ret
         
-            # Run filter on data:
-            # print "Running filter with cutoffFrequency=" + str(cutoffFrequency) + "Hz and order=" + str(order) + "..."
-            ret = pf.filter(cutoffFrequency, order)
-            if not ret:
-                #print "filter() ran successfully returning", ret
-                pass
-            else:
-                print "*** filter() failed! returned", ret
+        #     # Run filter on data:
+        #     # print "Running filter with cutoffFrequency=" + str(cutoffFrequency) + "Hz and order=" + str(order) + "..."
+        #     ret = pf.filter(cutoffFrequency, order)
+        #     if not ret:
+        #         #print "filter() ran successfully returning", ret
+        #         pass
+        #     else:
+        #         print "*** filter() failed! returned", ret
 
-            # predictedPoint = pf.getPrediction(timestamps[i])
-            # print 'predicted point',predictedPoint
+        #     # predictedPoint = pf.getPrediction(timestamps[i])
+        #     # print 'predicted point',predictedPoint
 
-            # coeffs = pf.getCoeffs()
-            # coeffs = coeffs.tolist()
-            # coeffs.reverse()
-            # fitData = pf.getDataToFit()
-            # fitTime = pf.getTimeToFit()
-            # print "input", data[i:i+1]
-            # rawData = pf.getData()
-            # print "raw data:", rawData
-            # print "fit data", fitData
-            # print "fit Time", fitTime
-            # print "coeffs", coeffs
+        #     # coeffs = pf.getCoeffs()
+        #     # coeffs = coeffs.tolist()
+        #     # coeffs.reverse()
+        #     # fitData = pf.getDataToFit()
+        #     # fitTime = pf.getTimeToFit()
+        #     # print "input", data[i:i+1]
+        #     # rawData = pf.getData()
+        #     # print "raw data:", rawData
+        #     # print "fit data", fitData
+        #     # print "fit Time", fitTime
+        #     # print "coeffs", coeffs
 
         # Extract predicted point from filter:
-        print "Getting prediction for the next timestamp=" + str(timestamps[dataPointsToGoThrough-1]) + " ns, data=" + str(data[dataPointsToGoThrough-1]) + "..."
-        predictedTime = timestamps[dataPointsToGoThrough-1] + timestamps[dataPointsToGoThrough-1] - timestamps[dataPointsToGoThrough-2]
-        predictedPoint = pf.getPrediction(predictedTime)
-        print "getPrediction() at " + str(predictedTime) + " returned a value of: " + str(predictedPoint)
-        print
-        print "Getting prediction for the current timestamp..."
-        print "getPrediction() returned a value of: " + str(pf.getPrediction())
-        print
+        # print "Getting prediction for the next timestamp=" + str(timestamps[dataPointsToGoThrough-1]) + " ns, data=" + str(data[dataPointsToGoThrough-1]) + "..."
+        # predictedTime = timestamps[dataPointsToGoThrough-1] + timestamps[dataPointsToGoThrough-1] - timestamps[dataPointsToGoThrough-2]
+        # predictedPoint = pf.getPrediction(predictedTime)
+        # print "getPrediction() at " + str(predictedTime) + " returned a value of: " + str(predictedPoint)
+        # print
+        # print "Getting prediction for the current timestamp..."
+        # print "getPrediction() returned a value of: " + str(pf.getPrediction())
+        # print
     #######################################################
     #######################################################
 
@@ -333,10 +333,10 @@ if __name__ == "__main__":
     # data.dt = map(lambda x,y:x-y,data.time.iloc[1:].tolist(),data.time.iloc[:-1].tolist())
     # print "Loading file: ", args.fname
     # data = zip(*np.genfromtxt(args.fname, dtype=None, delimiter=','))
-    time = np.arange(0,400,dtype='uint64')
+    time = np.arange(0,400,dtype='double')
     azimuth = np.array(np.sin(2*np.pi*time/400.0), dtype='double') + (np.random.rand(len(time))-0.5)*0.5
 
     runTest(time,azimuth)
     #print "Processing azimuth data, generating residuals and predictions for whole dataset"
     # Run the test:
-    # residuals,predictions = generatePredictionResiduals(time, azimuth)  
+    residuals,predictions = generatePredictionResiduals(time, azimuth)  

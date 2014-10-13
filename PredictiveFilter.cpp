@@ -83,7 +83,7 @@ int PredictiveFilter::configure(unsigned int numPointsToFilter, unsigned flags)
     return 0;
 }
 
-int PredictiveFilter::addData(unsigned long* timestamps, double* datapoints, unsigned int length)
+int PredictiveFilter::addData(double* timestamps, double* datapoints, unsigned int length)
 {
     // #if PREDICTIVE_FILTER_TIMING
     // addSW.start();
@@ -113,14 +113,14 @@ int PredictiveFilter::addData(unsigned long* timestamps, double* datapoints, uns
     // cout << "before moving " << dataInBufferToKeep << " dps: " << endl;
     // printBuffer(data, numDataPoints);
     memmove(&data[0], &data[length], dataInBufferToKeep*sizeof(double));
-    memmove(&time[0], &time[length], dataInBufferToKeep*sizeof(unsigned long));
+    memmove(&time[0], &time[length], dataInBufferToKeep*sizeof(double));
     //cout << "after: " << endl;
     //printBuffer(data, numDataPoints);
 
     // Copy over new data (can use memcpy because data buffers do not overlap!):
     // cout << "Copying over " << length << " data points [" << datapoints[offset] << "], indexing into new buffer at " << offset << " copying to " << dataInBufferToKeep << endl;
     memcpy(&data[dataInBufferToKeep], &datapoints[offset], length*sizeof(double));
-    memcpy(&time[dataInBufferToKeep], &timestamps[offset], length*sizeof(unsigned long));
+    memcpy(&time[dataInBufferToKeep], &timestamps[offset], length*sizeof(double));
     // cout << "after: " << endl;
     // printBuffer(data, numDataPoints);
 
@@ -188,7 +188,7 @@ int PredictiveFilter::filter(double cutoffFrequency, int order, unsigned int num
         if( numDataPoints >= 2)
         {
              // Calculate the SI ratio
-            double avedt = (time[numDataPoints-1] - time[0]) / NSINSEC / numDataPoints;
+            double avedt = (time[numDataPoints-1] - time[0]) / numDataPoints;
             // cout << "average dt: " << avedt << endl;
             double sampleFrequency = 1.0/avedt;
             // cout << "average sample freq: " << sampleFrequency << endl;
@@ -233,11 +233,11 @@ int PredictiveFilter::filter(double cutoffFrequency, int order, unsigned int num
         memcpy(&dataToFit[0], &data[index], numPointsToFit*sizeof(double));
 
     // Copy over time for polynomial fitting:
-    unsigned long firstTimestamp = time[index];
+    double firstTimestamp = time[index];
     for( unsigned int i = 0; i < numPointsToFit; i++ )
     {
         // Zero time to first timestamp for polyfit to work correctly:
-        timeToFit[i] = ((double) (time[index] - firstTimestamp))/NSINSEC;
+        timeToFit[i] = ((double) (time[index] - firstTimestamp));
         index++;
     }
 
@@ -295,10 +295,10 @@ int PredictiveFilter::filter(double cutoffFrequency, int order, unsigned int num
     return 0;
 }
 
-double PredictiveFilter::getPrediction(unsigned long timestamp)
+double PredictiveFilter::getPrediction(double timestamp)
 {
     long double coeffs[MAXORDER+1];
-    unsigned long firstTimestamp;
+    double firstTimestamp;
     int order;
 
     // LOCK THE MUTEX: //
@@ -322,7 +322,7 @@ double PredictiveFilter::getPrediction(unsigned long timestamp)
 
     // Calculate the current timestep:
     // cout << "timestamp " << timestamp << " first TS " << firstTimestamp << " diff " << timestamp - firstTimestamp << endl;
-    double timeToPredict = (timestamp - firstTimestamp)/NSINSEC;
+    double timeToPredict = (timestamp - firstTimestamp);
 
     // cout << "Predicting for order" << order << " at time " << timeToPredict << " coeffs ";
     // for(int i = 0; i < MAXORDER+1; i++ )
