@@ -23,8 +23,10 @@ cdef extern from "PredictiveFilter.h":
         double getStartTime()
 
 
+import numpy as np
 # Import C level numpy:
 cimport numpy as np
+import ctypes
 
 # # Numpy must be initialized. When using numpy from C or Cython you must
 # # _always_ do that, or you will have segfaults
@@ -55,8 +57,16 @@ cdef class PyPredictiveFilter:
         fftwPlan = {"FFTW_ESTIMATE":64, "FFTW_MEASURE":0, "FFTW_PATIENT": 32, "FFTW_EXHAUSTIVE": 8, "FFTW_WISDOM_ONLY": 2097152}
         return self.thisptr.configure(numPointsToFilter, fftwPlan[flags])
 
-    def addData(self, np.ndarray[double, ndim=1] timestamps, np.ndarray[double, ndim=1] datapoints):
-        return self.thisptr.addData(&timestamps[0], &datapoints[0], len(timestamps))
+    def addData(self, X, Y):
+        ## Add by [] lists. Fix this sometime to work with more types
+        if isinstance(X,(int,float)):
+            X=[X]
+        if isinstance(Y,(int,float)):
+            Y=[Y]
+        cdef np.ndarray[double, ndim=1] X_ary = np.array(X, dtype='double')
+        cdef np.ndarray[double, ndim=1] Y_ary = np.array(Y, dtype='double')
+
+        return self.thisptr.addData(&X_ary[0], &Y_ary[0], len(X_ary))
 
     def filter(self, cutoffFrequency, order, numPointsToFit=0):
         return self.thisptr.filter(cutoffFrequency, order, numPointsToFit)
