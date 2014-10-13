@@ -44,7 +44,7 @@ pf = pypfilt.PyPredictiveFilter()
 
 x=np.linspace(0,6*np.pi,300)
 dataset=15*np.sin(x)+np.random.ranf(len(x))*3
-time = np.array(np.arange(len(x)), dtype='uint64')
+time = np.array(np.arange(len(x)), dtype='double')
 
 
 numPointsToFilter = 128
