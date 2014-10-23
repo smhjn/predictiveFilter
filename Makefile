@@ -46,7 +46,7 @@ install:
 	chmod a+x ../$(INSLIB)/$(LIBS)
 	
 clean:
-	-rm -f $(OBJS) $(LIBS) $(TEST) $(TMP) PyPredictiveFilter.cpp PyPredictiveFilter.c PyPredictiveFilter.so
+	-rm -f $(OBJS) $(LIBS) $(TEST) build/* PyPredictiveFilter.cpp PyPredictiveFilter.c PyPredictiveFilter.so
 	rm -rf build/*
 	make -C ./cdhlib clean
 

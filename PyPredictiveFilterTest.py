@@ -39,8 +39,8 @@ def runTest(timestamps, data):
         print "*** configure() failed! returned", ret
 
     # Configurable filter values:
-    order = 2
-    cutoffFrequency = 1.0 # Hz
+    order = 3
+    cutoffFrequency = 0.2 # Hz
 
     #######################################################
     ##################### TEST 1 ##########################
@@ -151,7 +151,7 @@ def runTest(timestamps, data):
     time = pf.getTime()
     #print time
     firstTime = time[0]
-    time = (time - firstTime).astype(np.float64)/1000.0/1000.0/1000.0
+    time = (time - firstTime)
     fitTimeToPlot = time[(numDataPoints - numDataPointsToFit):]
     coeffs = pf.getCoeffs()
     coeffs = coeffs.tolist()
@@ -166,7 +166,7 @@ def runTest(timestamps, data):
     plt.plot(time, filteredData, 'b', label="filtered data")
     plt.plot(fitTimeToPlot, fitData, 'gs', label='fit data')
     plt.plot(fitTimeToPlot, np.polyval(coeffs, fitTime), 'r', label='polynomial')
-    plt.plot((predictedTime - firstTime)/1000.0/1000.0/1000.0, predictedPoint, 'ro', label='predicted point')
+    plt.plot((predictedTime - firstTime), predictedPoint, 'ro', label='predicted point')
     plt.xlabel('Time [s]')
     plt.ylabel('Data Value')
     plt.grid()
@@ -333,10 +333,10 @@ if __name__ == "__main__":
     # data.dt = map(lambda x,y:x-y,data.time.iloc[1:].tolist(),data.time.iloc[:-1].tolist())
     # print "Loading file: ", args.fname
     # data = zip(*np.genfromtxt(args.fname, dtype=None, delimiter=','))
-    time = np.arange(0,400,dtype='double')
-    azimuth = np.array(np.sin(2*np.pi*time/400.0), dtype='double') + (np.random.rand(len(time))-0.5)*0.5
+    time = np.arange(0,100,0.5,dtype='double')## Something odd
+    azimuth = np.array(np.sin(2*np.pi*time/100), dtype='double') + (np.random.rand(len(time))-0.5)*0.15
 
     runTest(time,azimuth)
     #print "Processing azimuth data, generating residuals and predictions for whole dataset"
     # Run the test:
-    residuals,predictions = generatePredictionResiduals(time, azimuth)  
+    # residuals,predictions = generatePredictionResiduals(time, azimuth)  
